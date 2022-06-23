@@ -151,6 +151,14 @@ class HomeCubit extends Cubit<HomeStates> {
     emit(AddToCartState());
   }
 
+  CartItemsModel? isProductInCard(ProductHomeModel productHomeModel) {
+    var result = cartModels?.cartItems.where((element) => element.product?.id == productHomeModel.id);
+    return result!.isEmpty ? null : result.first;
+  }
+
+/**
+ * 1,2,3,4
+ */
 // Cart Screen
 
 }

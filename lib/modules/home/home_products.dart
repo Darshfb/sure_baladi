@@ -31,6 +31,7 @@ class HomeProducts extends StatelessWidget {
                       childAspectRatio: 1.1 / 1.6,
                       mainAxisExtent: 295),
                   itemBuilder: (context, index) {
+                    var itemInCart = cubit.isProductInCard(cubit.homeModel!.content[index]);
                     return Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -110,7 +111,7 @@ class HomeProducts extends StatelessWidget {
                             const SizedBox(
                               height: 5,
                             ),
-                            (!cubit.isAdded)
+                            (itemInCart == null)
                                 ? CustomButton(
                                     backgroundColor: AppColors.primaryColor,
                                     width: double.infinity,
@@ -155,8 +156,8 @@ class HomeProducts extends StatelessWidget {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          const Text(
-                                            '1',
+                                          Text(
+                                            itemInCart.quantity.toString(),
                                             style: TextStyle(fontSize: 15),
                                           ),
                                           const SizedBox(
