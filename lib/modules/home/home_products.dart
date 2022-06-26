@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
 import 'package:surebaladi/shared/component/component.dart';
+import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
 class HomeProducts extends StatelessWidget {
@@ -14,16 +15,14 @@ class HomeProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeStates>(
-      listener: (BuildContext context, state) {},
-      builder: (BuildContext context, Object? state) {
+      listener: (context, state) {},
+      builder: (context, state) {
         var cubit = HomeCubit.get(context);
-        if (cubit.homeModel != null) {
+        if (cubit.homeModel != null && cubit.cartModels != null) {
           return ConditionalBuilder(
               condition: state is! HomeProductLoadingState,
               builder: (context) => GridView.builder(
-                  itemCount: (cubit.homeModel!.content.isNotEmpty)
-                      ? cubit.homeModel!.content.length
-                      : 10,
+                  itemCount: cubit.homeModel!.content.length,
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -31,6 +30,7 @@ class HomeProducts extends StatelessWidget {
                       childAspectRatio: 1.1 / 1.6,
                       mainAxisExtent: 295),
                   itemBuilder: (context, index) {
+                    var itemInCart = cubit.isProductInCard(cubit.homeModel!.content[index]);
                     return Card(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
@@ -110,7 +110,7 @@ class HomeProducts extends StatelessWidget {
                             const SizedBox(
                               height: 5,
                             ),
-                            (!cubit.isAdded)
+                            (itemInCart == null)
                                 ? CustomButton(
                                     backgroundColor: AppColors.primaryColor,
                                     width: double.infinity,
@@ -133,11 +133,13 @@ class HomeProducts extends StatelessWidget {
                                           ),
                                           Expanded(
                                             child: InkWell(
-                                              onTap: () {},
+                                              onTap: () {
+                                                cubit.removeFromCart(id: cubit.homeModel!.content[index].id!);
+                                              },
                                               child: const SizedBox(
                                                   width: 20,
                                                   child: Icon(
-                                                    Icons.delete_forever,
+                                                    IconBroken.delete,
                                                     color: Colors.red,
                                                   )),
                                             ),
@@ -155,8 +157,8 @@ class HomeProducts extends StatelessWidget {
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          const Text(
-                                            '1',
+                                          Text(
+                                            itemInCart.quantity.toString(),
                                             style: TextStyle(fontSize: 15),
                                           ),
                                           const SizedBox(

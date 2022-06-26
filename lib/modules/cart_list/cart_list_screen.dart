@@ -19,7 +19,9 @@ class CartScreen extends StatelessWidget {
         var cubit = HomeCubit.get(context);
         if(cubit.cartModels!.cartItems.isNotEmpty) {
           return ConditionalBuilder(
-            condition: state is ! LoadingCartState,
+            //This Condition here for the list to make the card still there
+            // if i click on decrease or increase
+            condition: cubit.cartModels!.cartItems.isNotEmpty,
             builder: (context) {
               return Column(
                 children: [
@@ -100,7 +102,9 @@ class CartScreen extends StatelessWidget {
                                                               .transparent,
                                                         ),
                                                       ),
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        cubit.decreaseAddToCart(id: cubit.cartModels!.cartItems[index].product!.id!);
+                                                      },
                                                       child: const Icon(
                                                           Icons.remove),
                                                     ),
@@ -125,7 +129,9 @@ class CartScreen extends StatelessWidget {
                                                               .transparent,
                                                         ),
                                                       ),
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        cubit.increaseAddToCart(id: cubit.cartModels!.cartItems[index].product!.id!);
+                                                      },
                                                       child:
                                                           const Icon(Icons.add),
                                                     ),

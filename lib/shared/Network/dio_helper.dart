@@ -34,4 +34,18 @@ class DioHelper {
     };
     return _dio!.post(url, queryParameters: query, data: data);
   }
+
+  static Future<Response> deleteData(
+      {required String url,
+        Map<String, dynamic>? data,
+        Map<String, dynamic>? query,
+        String? Token
+      }) {
+    _dio!.options.headers = {
+      "Content-Type": "application/json",
+      "Accept": "*/*",
+      "Authorization": Token
+    };
+    return _dio!.delete(url, queryParameters: query, data: data);
+  }
 }

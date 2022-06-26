@@ -14,8 +14,15 @@ class HomeProductErrorState extends HomeStates {
   HomeProductErrorState({required this.error});
 }
 
-class AddToCartState extends HomeStates{}
+class AddToCartState extends HomeStates {}
 
+class LoadingIncreaseItemToCartState extends HomeStates {}
+
+class IncreaseItemToCartState extends HomeStates {}
+
+class DecreaseItemToCartState extends HomeStates {}
+
+class LoadingDecreaseItemToCartState extends HomeStates {}
 
 class GetCategoriesLoadingState extends HomeStates {}
 
@@ -35,4 +42,22 @@ class ErrorCartState extends HomeStates {
   final String error;
 
   ErrorCartState({required this.error});
+}
+
+class IncreaseCartState extends HomeStates {}
+
+class IsItemInCart extends HomeStates {}
+
+class LoadingIsItemInCart extends HomeStates {}
+
+class DecreaseCartState extends HomeStates {}
+
+class GetCategoryProductLoadingState extends HomeStates {}
+
+class GetCategoryProductSuccessState extends HomeStates {}
+
+class GetCategoryProductErrorState extends HomeStates {
+  final String error;
+
+  GetCategoryProductErrorState({required this.error});
 }
