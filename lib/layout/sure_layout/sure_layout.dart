@@ -1,13 +1,11 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
 import 'package:surebaladi/layout/sure_layout/drawer.dart';
-import 'package:surebaladi/modules/category/category_screen.dart';
-import 'package:surebaladi/shared/constants/const.dart';
+import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
 class SureLayout extends StatelessWidget {
@@ -32,22 +30,21 @@ class SureLayout extends StatelessWidget {
             // openScale: 1.0,
             disabledGestures: false,
             childDecoration: const BoxDecoration(
-              // NOTICE: Uncomment if you want to add shadow behind the page.
-              // Keep in mind that it may cause animation jerks.
-              // boxShadow: <BoxShadow>[
-              //   BoxShadow(
-              //     color: Colors.black12,
-              //     blurRadius: 0.0,
-              //   ),
-              // ],
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
             drawer: const MyDrawer(),
             child: Scaffold(
               // end: Colors.black,
-              endDrawer: const CategoryScreen(),
               appBar: AppBar(
                 elevation: 0,
+                title: Row(
+                  children: [
+                    IconButton(onPressed: (){
+                      cubit.getCartData();
+                    }, icon: Icon(Icons.add),),
+
+                  ],
+                ),
                 backgroundColor: AppColors.primaryColor,
                 leading: IconButton(
                   onPressed: _handleMenuButtonPressed,
@@ -69,8 +66,8 @@ class SureLayout extends StatelessWidget {
               body: cubit.screens[cubit.currentIndex],
               bottomNavigationBar: ConvexAppBar.badge(
                 {
-                  1: '${context.watch<HomeCubit>().cartModels != null ? context.watch<HomeCubit>().cartModels!.cartItems.length : ''}',
-                  2: '100'
+                  2: '${context.watch<HomeCubit>().cartModels != null ? cubit.cartModels!.cartItems.length : ''}',
+                  3: '100'
                 },
                 badgeMargin: const EdgeInsets.only(
                   bottom: 30,
@@ -86,6 +83,7 @@ class SureLayout extends StatelessWidget {
                 },
                 items: const [
                   TabItem(icon: Icons.home_outlined, title: 'Home'),
+                  TabItem(icon: IconBroken.category, title: 'Category'),
                   TabItem(icon: Icons.shopping_cart, title: 'Cart'),
                   TabItem(icon: Icons.favorite, title: 'Favorite'),
                   TabItem(icon: Icons.compare_arrows, title: 'Compare'),

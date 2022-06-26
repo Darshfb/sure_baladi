@@ -4,14 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
 import 'package:surebaladi/models/cart_models/cart_models.dart';
 import 'package:surebaladi/models/category_model/all_categories_model.dart';
+import 'package:surebaladi/models/category_model/category_product_model.dart';
 import 'package:surebaladi/models/home_models/home_models.dart';
 import 'package:surebaladi/modules/cart_list/cart_list_screen.dart';
+import 'package:surebaladi/modules/category/category_screen.dart';
 import 'package:surebaladi/modules/compare/compare_screen.dart';
 import 'package:surebaladi/modules/home/home_screen.dart';
 import 'package:surebaladi/modules/wish_list/wish_list_screen.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/Network/dio_helper.dart';
-import '../../shared/constants/const.dart';
+import 'package:surebaladi/shared/constants/const.dart';
 
 class HomeCubit extends Cubit<HomeStates> {
   HomeCubit() : super(InitialAppState());
@@ -20,6 +22,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
   List<Widget> screens = [
     const HomeScreen(),
+    const CategoryScreen(),
     const CartScreen(),
     const WishListScreen(),
     const CompareScreen(),
@@ -31,28 +34,6 @@ class HomeCubit extends Cubit<HomeStates> {
   void changeBottomNav(int index) {
     currentIndex = index;
     emit(BottomNavState());
-  }
-
-  //  cart
-
-  CartModels? cartModels;
-
-  void getCartData() async {
-    emit(LoadingCartState());
-    await DioHelper.getData(
-            url: 'cart', Token: '$bearer ${CacheHelper.getData(key: token)}')
-        .then((value) {
-      emit(SuccessCartState());
-      cartModels = CartModels.fromJson(value.data);
-      if (kDebugMode) {
-        print('cart Screen is ${value.data}');
-      }
-    }).catchError((error) {
-      emit(ErrorCartState(error: error.toString()));
-      if (kDebugMode) {
-        print(error.toString());
-      }
-    });
   }
 
   // Home
@@ -100,44 +81,84 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
+  // category products
+  int pageNo = 0;
+  CategoryProductModel? categoryProductModel;
+
+  void getCategoryProduct({int? id}) {
+    emit(GetCategoryProductLoadingState());
+    DioHelper.getData(
+            url: 'product/category/$id',
+            query: {"pageNo": pageNo, "pageSize": 10, "sortBy": "id"},
+            Token: '$bearer $savedToken')
+        .then((value) {
+      categoryProductModel = CategoryProductModel.fromJson(value.data);
+      if (kDebugMode) {
+        print(value.data);
+      }
+      emit(GetCategoryProductSuccessState());
+    }).catchError((error) {
+      emit(GetCategoryProductErrorState(error: error.toString()));
+    });
+  }
+
+  //  cart
+
+  CartModels? cartModels;
+
+  void getCartData() async {
+    emit(LoadingCartState());
+    await DioHelper.getData(
+            url: 'cart', Token: '$bearer ${CacheHelper.getData(key: token)}')
+        .then((value) {
+      emit(SuccessCartState());
+      cartModels = CartModels.fromJson(value.data);
+      if (kDebugMode) {
+        print('cart Screen is ${value.data}');
+        print('cart size is ${cartModels!.cartItems.length}');
+      }
+    }).catchError((error) {
+      emit(ErrorCartState(error: error.toString()));
+      if (kDebugMode) {
+        print(error.toString());
+      }
+    });
+  }
+
+  CartItemsModel? isCategoryProductInCard(
+      CategoryProductContentModel categoryProductContentModel) {
+    var result = cartModels?.cartItems.where(
+        (element) => element.product?.id == categoryProductContentModel.id);
+    return result!.isEmpty ? null : result.first;
+  }
+
+  void addMoreProduct() {
+    pageNo++;
+    getCategoryProduct();
+  }
+
   // add to cart
-  bool isAdded = false;
-  String? text;
-  Map<String, bool> map = {};
 
   void increaseAddToCart({required int id}) {
-    emit(AddToCartState());
+    emit(LoadingIncreaseItemToCartState());
     DioHelper.postData(
             url: 'cart/1',
             data: {"productId": id},
             Token: '$bearer $savedToken')
         .then((value) {
-      isAdded = true;
+      emit(IncreaseItemToCartState());
       getCartData();
-      // for (var element in cartModels!.cartItems) {
-      // print(element.product!.id.toString());
-      // for (var i in homeModel!.content) {
-      // print(i.id.toString());
-      // if (element.product!.id == i.id) {
-      //   text = element.quantity.toString();
-      //   print(text);
-      // }
-      // }
-      // }
-
-      // print(value.data);
     }).catchError((error) {});
   }
 
   void decreaseAddToCart({required int id}) {
-    print('hi');
-    emit(AddToCartState());
+    emit(LoadingDecreaseItemToCartState());
     DioHelper.postData(
             url: 'cart/-1',
             data: {"productId": id},
             Token: '$bearer $savedToken')
         .then((value) {
-      isAdded = true;
+      emit(DecreaseItemToCartState());
       getCartData();
       if (kDebugMode) {
         print(value.data);
@@ -145,14 +166,20 @@ class HomeCubit extends Cubit<HomeStates> {
     }).catchError((error) {});
   }
 
-  void removeFromCart() {
-    isAdded = false;
-
+  void removeFromCart({required int id}) {
+    DioHelper.deleteData(url: 'cart/$id', Token: '$bearer $savedToken')
+        .then((value) {
+      print('success');
+      getCartData();
+    }).catchError((error) {});
     emit(AddToCartState());
   }
 
   CartItemsModel? isProductInCard(ProductHomeModel productHomeModel) {
-    var result = cartModels?.cartItems.where((element) => element.product?.id == productHomeModel.id);
+    emit(LoadingIsItemInCart());
+    var result = cartModels?.cartItems
+        .where((element) => element.product?.id == productHomeModel.id);
+    emit(IsItemInCart());
     return result!.isEmpty ? null : result.first;
   }
 
