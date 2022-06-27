@@ -180,7 +180,7 @@ class HomeCubit extends Cubit<HomeStates> {
     var result = cartModels?.cartItems
         .where((element) => element.product?.id == productHomeModel.id);
     emit(IsItemInCart());
-    return result!.isEmpty ? null : result.first;
+    return result== null? null: result.isEmpty ? null : result.first;
   }
 
 /**
