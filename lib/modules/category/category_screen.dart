@@ -5,7 +5,6 @@ import 'package:surebaladi/layout/cubit/states.dart';
 import 'package:surebaladi/modules/category/category_product/category_product_screen.dart';
 import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
-import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);

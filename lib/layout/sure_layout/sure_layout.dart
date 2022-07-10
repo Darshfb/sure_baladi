@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
 import 'package:surebaladi/layout/sure_layout/drawer.dart';
+import 'package:surebaladi/shared/constants/const.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
@@ -36,15 +37,6 @@ class SureLayout extends StatelessWidget {
             child: Scaffold(
               // end: Colors.black,
               appBar: AppBar(
-                elevation: 0,
-                title: Row(
-                  children: [
-                    IconButton(onPressed: (){
-                      cubit.getCartData();
-                    }, icon: Icon(Icons.add),),
-
-                  ],
-                ),
                 backgroundColor: AppColors.primaryColor,
                 leading: IconButton(
                   onPressed: _handleMenuButtonPressed,
@@ -65,9 +57,9 @@ class SureLayout extends StatelessWidget {
               ),
               body: cubit.screens[cubit.currentIndex],
               bottomNavigationBar: ConvexAppBar.badge(
-                {
-                  2: '${context.watch<HomeCubit>().cartModels != null ? cubit.cartModels!.cartItems.length : ''}',
-                  3: '100'
+                const {
+                  2: '',
+                  3: ''
                 },
                 badgeMargin: const EdgeInsets.only(
                   bottom: 30,
@@ -86,7 +78,6 @@ class SureLayout extends StatelessWidget {
                   TabItem(icon: IconBroken.category, title: 'Category'),
                   TabItem(icon: Icons.shopping_cart, title: 'Cart'),
                   TabItem(icon: Icons.favorite, title: 'Favorite'),
-                  TabItem(icon: Icons.compare_arrows, title: 'Compare'),
                 ],
               ),
               // BottomNavigationBar(

@@ -21,11 +21,10 @@ class HomeCubit extends Cubit<HomeStates> {
   static HomeCubit get(context) => BlocProvider.of(context);
 
   List<Widget> screens = [
-    const HomeScreen(),
+    HomeScreen(),
     const CategoryScreen(),
     const CartScreen(),
     const WishListScreen(),
-    const CompareScreen(),
   ];
 
   int currentIndex = 0;
@@ -38,15 +37,31 @@ class HomeCubit extends Cubit<HomeStates> {
 
   // Home
   HomeModel? homeModel;
-
-  void getHomeProductData() {
+  List<dynamic> content = [];
+  int page = 0;
+  bool? last;
+  void getHomeProductData({bool isRefresh = true}) {
+    if(isRefresh){
+      page = 0;
+    }
     emit(HomeProductLoadingState());
     DioHelper.getData(
-      url: 'product/getFeatureProducts?pageNo=0&pageSize=15&sortBy=price',
+      url: 'product/getFeatureProducts?pageNo=$page&pageSize=5&sortBy=price',
     ).then((value) {
       homeModel = HomeModel.fromJson(value.data);
+      if(isRefresh)
+      {
+        content = homeModel!.content;
+      }else{
+        content.addAll(homeModel!.content);
+      }
+      page++;
+      last = homeModel!.last;
+      print(last.toString());
       if (kDebugMode) {
-        print('Home Data ${value.data}');
+        print('>>>>>>>>>>>>>>>>>>>');
+        print('Home Data ${content.length}');
+        print('>>>>>>>>>>>>>>>>>>>');
       }
       emit(HomeProductSuccessState());
     }).catchError((error) {
@@ -86,12 +101,15 @@ class HomeCubit extends Cubit<HomeStates> {
   CategoryProductModel? categoryProductModel;
 
   void getCategoryProduct({int? id}) {
+    getCartData();
     emit(GetCategoryProductLoadingState());
+
     DioHelper.getData(
             url: 'product/category/$id',
             query: {"pageNo": pageNo, "pageSize": 10, "sortBy": "id"},
             Token: '$bearer $savedToken')
         .then((value) {
+      // getCartData();
       categoryProductModel = CategoryProductModel.fromJson(value.data);
       if (kDebugMode) {
         print(value.data);
@@ -105,18 +123,22 @@ class HomeCubit extends Cubit<HomeStates> {
   //  cart
 
   CartModels? cartModels;
-
+  // String? cartLen;
   void getCartData() async {
     emit(LoadingCartState());
     await DioHelper.getData(
             url: 'cart', Token: '$bearer ${CacheHelper.getData(key: token)}')
         .then((value) {
-      emit(SuccessCartState());
+          print('>>>>>>>>>>>>>>>>>>>>>>>>>');
+          print(value.statusCode.toString());
+          print('>>>>>>>>>>>>>>>>>>>>>>>>>');
       cartModels = CartModels.fromJson(value.data);
+      // cartLen = value.data['cartItems'].length.toString();
       if (kDebugMode) {
         print('cart Screen is ${value.data}');
         print('cart size is ${cartModels!.cartItems.length}');
       }
+      emit(SuccessCartState());
     }).catchError((error) {
       emit(ErrorCartState(error: error.toString()));
       if (kDebugMode) {
@@ -132,21 +154,19 @@ class HomeCubit extends Cubit<HomeStates> {
     return result!.isEmpty ? null : result.first;
   }
 
-  void addMoreProduct() {
-    pageNo++;
-    getCategoryProduct();
-  }
+
 
   // add to cart
-
+  // CartModels? cartModels1;
   void increaseAddToCart({required int id}) {
     emit(LoadingIncreaseItemToCartState());
     DioHelper.postData(
             url: 'cart/1',
             data: {"productId": id},
             Token: '$bearer $savedToken')
-        .then((value) {
-      emit(IncreaseItemToCartState());
+        .then((value)
+    {
+          print(value.data['cartItems'].length.toString());
       getCartData();
     }).catchError((error) {});
   }
@@ -158,21 +178,16 @@ class HomeCubit extends Cubit<HomeStates> {
             data: {"productId": id},
             Token: '$bearer $savedToken')
         .then((value) {
-      emit(DecreaseItemToCartState());
       getCartData();
-      if (kDebugMode) {
-        print(value.data);
-      }
     }).catchError((error) {});
   }
 
   void removeFromCart({required int id}) {
     DioHelper.deleteData(url: 'cart/$id', Token: '$bearer $savedToken')
         .then((value) {
-      print('success');
       getCartData();
     }).catchError((error) {});
-    emit(AddToCartState());
+
   }
 
   CartItemsModel? isProductInCard(ProductHomeModel productHomeModel) {
@@ -180,7 +195,11 @@ class HomeCubit extends Cubit<HomeStates> {
     var result = cartModels?.cartItems
         .where((element) => element.product?.id == productHomeModel.id);
     emit(IsItemInCart());
-    return result== null? null: result.isEmpty ? null : result.first;
+    return result == null
+        ? null
+        : result.isEmpty
+            ? null
+            : result.first;
   }
 
 /**

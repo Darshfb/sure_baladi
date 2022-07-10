@@ -28,12 +28,16 @@
 class HomeModel{
   List<ProductHomeModel> content = [];
   int? totalPages;
+  int? totalElements;
+  bool? last;
 
   HomeModel.fromJson(Map<String, dynamic> json){
     json['content'].forEach((element){
       content.add(ProductHomeModel.fromJson(element));
     });
     totalPages = json['totalPages'];
+    totalElements = json['totalElements'];
+    last = json['last'];
   }
 
 }

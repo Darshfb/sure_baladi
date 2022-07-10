@@ -16,6 +16,8 @@ class HomeProductErrorState extends HomeStates {
 
 class AddToCartState extends HomeStates {}
 
+class RemoveFromCartState extends HomeStates {}
+
 class LoadingIncreaseItemToCartState extends HomeStates {}
 
 class IncreaseItemToCartState extends HomeStates {}
@@ -61,3 +63,5 @@ class GetCategoryProductErrorState extends HomeStates {
 
   GetCategoryProductErrorState({required this.error});
 }
+
+class GetMoreHomeData extends HomeStates{}

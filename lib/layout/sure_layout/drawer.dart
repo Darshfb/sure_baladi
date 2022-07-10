@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:surebaladi/layout/sure_layout/sure_layout.dart';
 import 'package:surebaladi/modules/auth/login/login_screen.dart';
+import 'package:surebaladi/modules/cart_list/cart_list_screen.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/constants/const.dart';
+import 'package:surebaladi/shared/styles/icon_broken.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -45,6 +47,13 @@ class MyDrawer extends StatelessWidget {
               onTap: () {},
               leading: const Icon(Icons.account_circle_rounded),
               title: const Text('Profile'),
+            ),
+            ListTile(
+              onTap: () {
+                navigateTo(context: context, widget: const CartScreen());
+              },
+              leading: const Icon(IconBroken.buy),
+              title: const Text('Cart'),
             ),
             ListTile(
               onTap: () {},
