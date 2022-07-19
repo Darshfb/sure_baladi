@@ -19,6 +19,7 @@ class AddToCartState extends HomeStates {}
 class RemoveFromCartState extends HomeStates {}
 
 class LoadingIncreaseItemToCartState extends HomeStates {}
+class SuccessIncreaseItemToCartState extends HomeStates {}
 
 class IncreaseItemToCartState extends HomeStates {}
 

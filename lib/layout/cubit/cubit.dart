@@ -8,7 +8,6 @@ import 'package:surebaladi/models/category_model/category_product_model.dart';
 import 'package:surebaladi/models/home_models/home_models.dart';
 import 'package:surebaladi/modules/cart_list/cart_list_screen.dart';
 import 'package:surebaladi/modules/category/category_screen.dart';
-import 'package:surebaladi/modules/compare/compare_screen.dart';
 import 'package:surebaladi/modules/home/home_screen.dart';
 import 'package:surebaladi/modules/wish_list/wish_list_screen.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
@@ -19,7 +18,7 @@ class HomeCubit extends Cubit<HomeStates> {
   HomeCubit() : super(InitialAppState());
 
   static HomeCubit get(context) => BlocProvider.of(context);
-
+  String TOKEN = '$bearer ${CacheHelper.getData(key: token)}';
   List<Widget> screens = [
     HomeScreen(),
     const CategoryScreen(),
@@ -40,29 +39,23 @@ class HomeCubit extends Cubit<HomeStates> {
   List<dynamic> content = [];
   int page = 0;
   bool? last;
+
   void getHomeProductData({bool isRefresh = true}) {
-    if(isRefresh){
+    if (isRefresh) {
       page = 0;
     }
     emit(HomeProductLoadingState());
     DioHelper.getData(
-      url: 'product/getFeatureProducts?pageNo=$page&pageSize=5&sortBy=price',
+      url: 'product/getFeatureProducts?pageNo=$page&pageSize=15&sortBy=price',
     ).then((value) {
       homeModel = HomeModel.fromJson(value.data);
-      if(isRefresh)
-      {
+      if (isRefresh) {
         content = homeModel!.content;
-      }else{
+      } else {
         content.addAll(homeModel!.content);
       }
       page++;
       last = homeModel!.last;
-      print(last.toString());
-      if (kDebugMode) {
-        print('>>>>>>>>>>>>>>>>>>>');
-        print('Home Data ${content.length}');
-        print('>>>>>>>>>>>>>>>>>>>');
-      }
       emit(HomeProductSuccessState());
     }).catchError((error) {
       emit(HomeProductErrorState(error: error.toString()));
@@ -97,41 +90,53 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   // category products
-  int pageNo = 0;
+  int productPageNo = 0;
   CategoryProductModel? categoryProductModel;
-
-  void getCategoryProduct({int? id}) {
+  bool? lastProduct;
+  List<dynamic> productContent = [];
+  void getCategoryProduct({int? id, bool isRefresh = true}) {
     getCartData();
     emit(GetCategoryProductLoadingState());
-
     DioHelper.getData(
             url: 'product/category/$id',
-            query: {"pageNo": pageNo, "pageSize": 10, "sortBy": "id"},
-            Token: '$bearer $savedToken')
+            query: {"pageNo": productPageNo, "pageSize": 10, "sortBy": "id"},
+            Token: TOKEN)
         .then((value) {
-      // getCartData();
+          if(value.statusCode ==200){
+            print('......................................');
+            print('This is Status code ${value.statusCode}');
+            print('......................................');
+          }
       categoryProductModel = CategoryProductModel.fromJson(value.data);
-      if (kDebugMode) {
-        print(value.data);
+      if(isRefresh)
+      {
+        productContent = categoryProductModel!.content;
+      }else{
+        productContent.addAll(categoryProductModel!.content);
       }
       emit(GetCategoryProductSuccessState());
+      productPageNo++;
+      lastProduct = value.data['last'];
+
+      if (kDebugMode) {
+        print('.....');
+        print(value.data['last'].toString());
+        print('.....');
+      }
     }).catchError((error) {
       emit(GetCategoryProductErrorState(error: error.toString()));
+      print(error.toString());
     });
   }
 
   //  cart
 
   CartModels? cartModels;
+
   // String? cartLen;
-  void getCartData() async {
+  void getCartData()  {
     emit(LoadingCartState());
-    await DioHelper.getData(
-            url: 'cart', Token: '$bearer ${CacheHelper.getData(key: token)}')
-        .then((value) {
-          print('>>>>>>>>>>>>>>>>>>>>>>>>>');
-          print(value.statusCode.toString());
-          print('>>>>>>>>>>>>>>>>>>>>>>>>>');
+    DioHelper.getData(url: 'cart', Token: TOKEN).then((value) {
       cartModels = CartModels.fromJson(value.data);
       // cartLen = value.data['cartItems'].length.toString();
       if (kDebugMode) {
@@ -154,40 +159,32 @@ class HomeCubit extends Cubit<HomeStates> {
     return result!.isEmpty ? null : result.first;
   }
 
-
-
   // add to cart
-  // CartModels? cartModels1;
   void increaseAddToCart({required int id}) {
     emit(LoadingIncreaseItemToCartState());
-    DioHelper.postData(
-            url: 'cart/1',
-            data: {"productId": id},
-            Token: '$bearer $savedToken')
-        .then((value)
-    {
-          print(value.data['cartItems'].length.toString());
+    DioHelper.postData(url: 'cart/1', data: {"productId": id}, Token: TOKEN)
+        .then((value) {
+      emit(SuccessIncreaseItemToCartState());
       getCartData();
-    }).catchError((error) {});
+    }).catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+    });
   }
 
   void decreaseAddToCart({required int id}) {
     emit(LoadingDecreaseItemToCartState());
-    DioHelper.postData(
-            url: 'cart/-1',
-            data: {"productId": id},
-            Token: '$bearer $savedToken')
+    DioHelper.postData(url: 'cart/-1', data: {"productId": id}, Token: TOKEN)
         .then((value) {
       getCartData();
     }).catchError((error) {});
   }
 
   void removeFromCart({required int id}) {
-    DioHelper.deleteData(url: 'cart/$id', Token: '$bearer $savedToken')
-        .then((value) {
+    DioHelper.deleteData(url: 'cart/$id', Token: TOKEN).then((value) {
       getCartData();
     }).catchError((error) {});
-
   }
 
   CartItemsModel? isProductInCard(ProductHomeModel productHomeModel) {
@@ -201,10 +198,4 @@ class HomeCubit extends Cubit<HomeStates> {
             ? null
             : result.first;
   }
-
-/**
- * 1,2,3,4
- */
-// Cart Screen
-
 }

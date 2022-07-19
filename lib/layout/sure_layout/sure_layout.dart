@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
 import 'package:surebaladi/layout/sure_layout/drawer.dart';
+import 'package:surebaladi/modules/auth/login/login_screen.dart';
+import 'package:surebaladi/shared/Local/cache_helper.dart';
+import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/constants/const.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
@@ -18,7 +21,13 @@ class SureLayout extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => HomeCubit()..getCategory()..getHomeProductData()..getCartData(),
       child: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (BuildContext context, state) {},
+        listener: (BuildContext context, state) {
+          if(state is ErrorCartState){
+            CacheHelper.clearAll().then((value){
+              navigateTo(context: context, widget: LoginScreen());
+            });
+          }
+        },
         builder: (BuildContext context, Object? state) {
           var cubit = HomeCubit.get(context);
           return AdvancedDrawer(

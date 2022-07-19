@@ -23,7 +23,7 @@ class CategoryScreen extends StatelessWidget {
                     children: [
                       ListTile(
                         onTap: () {
-                          navigateTo(context: context, widget: ProductsScreen(id: cubit.allCategoriesModel!.content[index].id!,));
+                          navigateTo(context: context, widget: ProductsScreen(id: cubit.allCategoriesModel!.content[index].id!,productTitle: cubit.allCategoriesModel!.content[index].categoryNameAr!,));
                         },
                         horizontalTitleGap: 50,
                         dense: true,

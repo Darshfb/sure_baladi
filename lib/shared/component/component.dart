@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 Widget CustomTextFormField({
   required FormFieldValidator<String> validator,
-  required TextInputType keyboardType,
+  TextInputType? keyboardType,
   required TextEditingController controller,
   required String hintText,
   IconData? prefixIcon,

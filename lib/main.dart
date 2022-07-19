@@ -7,6 +7,7 @@ import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/Network/dio_helper.dart';
 import 'package:surebaladi/shared/bloc_ovserve.dart';
 import 'package:surebaladi/shared/constants/const.dart';
+import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sure Baladi',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: AppColors.primaryColor,
       ),
       home: const SplashScreen(),
     );

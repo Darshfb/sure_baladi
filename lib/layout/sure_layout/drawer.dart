@@ -49,13 +49,6 @@ class MyDrawer extends StatelessWidget {
               title: const Text('Profile'),
             ),
             ListTile(
-              onTap: () {
-                navigateTo(context: context, widget: const CartScreen());
-              },
-              leading: const Icon(IconBroken.buy),
-              title: const Text('Cart'),
-            ),
-            ListTile(
               onTap: () {},
               leading: const Icon(Icons.favorite),
               title: const Text('Favourites'),

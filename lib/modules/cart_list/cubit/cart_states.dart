@@ -1,16 +1,8 @@
-abstract class CartStates {}
+abstract class CheckOutStates {}
 
-class InitialCartState extends CartStates {}
+class InitialCartState extends CheckOutStates {}
 
-class LoadingCartState extends CartStates {}
-
-class SuccessCartState extends CartStates {}
-
-class ErrorCartState extends CartStates {
-  final String error;
-
-  ErrorCartState({required this.error});
-}
-
-class AddToCartState extends CartStates {}
-
+class ContinueState extends CheckOutStates{}
+class CancelState extends CheckOutStates{}
+class OnChangeState extends CheckOutStates{}
+class OnTappedState extends CheckOutStates{}
