@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
@@ -30,7 +31,7 @@ class SliderBanner extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(25)),
           child: Stack(
-            alignment: AlignmentDirectional.bottomEnd,
+            alignment: AlignmentDirectional.bottomStart,
             children: [
               FadeInImage.assetNetwork(
                 fit: BoxFit.cover,
@@ -39,12 +40,12 @@ class SliderBanner extends StatelessWidget {
                 image: 'https://img.freepik.com/free-vector/promotion-sale-labels-best-offers_206725-127.jpg?w=2000',
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 15,),
+                padding: const EdgeInsets.only(right: 15, left: 10.0),
                 child: CustomButton(
                   backgroundColor: AppColors.primaryColor,
                     textColor: Colors.white,
                     onPressed: (){},
-                    child: const Text('Shop Now')),
+                    child: Text('Shop Now'.tr())),
               )
             ],
           ),

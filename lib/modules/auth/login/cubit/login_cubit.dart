@@ -22,21 +22,21 @@ class LoginCubit extends Cubit<LoginStates> {
   }
 
   LoginModels? loginModels;
-
+//http://badawy.dscloud.me:8080/api/auth/signin
   void userLogin({
     required String userName,
     required String password,
   }) {
     emit(LoginLoadingState());
     DioHelper.postData(
-        url: 'api/auth/signin',
+        url: 'auth/signin',
         data: {"password": password, "username": userName}).then((value) {
       if (kDebugMode) {
         print(value.data);
       }
       loginModels = LoginModels.fromJson(value.data);
-      //CacheHelper.saveData(key: 'mostafa', value: '${loginModels!.token}');
-      //loginToken = CacheHelper.getData(key: 'mostafa');
+     CacheHelper.saveData(key: 'userName', value: loginModels!.username);
+     CacheHelper.saveData(key: 'email', value: loginModels!.email);
       emit(LoginSuccessState(token: loginModels!.token.toString()));
     }).catchError((error) {
       emit(LoginErrorState(error: error.toString()));

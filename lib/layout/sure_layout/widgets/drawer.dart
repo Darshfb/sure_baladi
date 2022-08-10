@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:surebaladi/layout/sure_layout/settings_screen.dart';
 import 'package:surebaladi/layout/sure_layout/sure_layout.dart';
 import 'package:surebaladi/modules/auth/login/login_screen.dart';
-import 'package:surebaladi/modules/cart_list/cart_list_screen.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/constants/const.dart';
@@ -33,41 +34,60 @@ class MyDrawer extends StatelessWidget {
               ),
               child: Image.asset(
                 'assets/images/ass.jpg',
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
+            if (CacheHelper.getData(key: token) != null)
+              Column(
+                children: [
+                  Text(
+                    CacheHelper.getData(key: 'userName').toString(),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    CacheHelper.getData(key: 'email').toString(),
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            const Divider(color: Colors.white),
             ListTile(
               onTap: () {
                 navigateAndFinish(context: context, widget: SureLayout());
               },
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-            ),
-            ListTile(
-              onTap: () {},
-              leading: const Icon(Icons.account_circle_rounded),
-              title: const Text('Profile'),
-            ),
-            ListTile(
-              onTap: () {},
-              leading: const Icon(Icons.favorite),
-              title: const Text('Favourites'),
-            ),
-            ListTile(
-              onTap: () {},
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              leading: const Icon(IconBroken.home),
+              title: Text('Home'.tr()),
             ),
             ListTile(
               onTap: () {
-                CacheHelper.clearData(token).then((value) {
-                  navigateAndFinish(context: context, widget: LoginScreen());
-                }).then((value) {
-                  CacheHelper.clearAll();
-                });
+                navigateTo(context: context, widget: SettingsScreen());
               },
-              leading: const Icon(Icons.logout),
-              title: const Text('Log out'),
+              leading: const Icon(IconBroken.setting),
+              title: Text('Settings'.tr()),
+            ),
+            ListTile(
+              onTap: () {
+                if (CacheHelper.getData(key: token) != null) {
+                  CacheHelper.clearData(token).then((value) {
+                    CacheHelper.clearAll();
+                    showToast(
+                        text: 'Logged out successfully'.tr(),
+                        state: ToastStates.ERROR);
+                    navigateAndFinish(context: context, widget: LoginScreen());
+                  });
+                } else {
+                  navigateTo(context: context, widget: LoginScreen());
+                }
+              },
+              leading: const Icon(IconBroken.logout),
+              title: Text(CacheHelper.getData(key: token) != null
+                  ? 'Log out'.tr()
+                  : 'Log in'.tr()),
             ),
             const Spacer(),
             DefaultTextStyle(

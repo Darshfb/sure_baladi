@@ -2,10 +2,11 @@ import 'package:dio/dio.dart';
 
 class DioHelper {
   static Dio? _dio;
-
+//http://badawy.dscloud.me:8080/api/auth/signin
   static init() {
     _dio = Dio(BaseOptions(
-      baseUrl: 'http://badawy.dscloud.me:8080/api/',
+      baseUrl: 'http://212.90.121.162:8080/api/',
+      // baseUrl: 'http://badawy.dscloud.me:8080/api/',
       //http://badawy.dscloud.me:8080/api/cart
       receiveDataWhenStatusError: true,
     ));

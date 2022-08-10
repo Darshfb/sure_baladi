@@ -1,24 +1,40 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:surebaladi/layout/sure_layout/sure_layout.dart';
+import 'package:surebaladi/models/cart_models/checkout_models.dart';
 import 'package:surebaladi/modules/cart_list/cubit/cart_cubit.dart';
 import 'package:surebaladi/modules/cart_list/cubit/cart_states.dart';
 import 'package:surebaladi/shared/component/component.dart';
 
+enum Menu { completed, favorite, delete }
+
 class CheckOut extends StatelessWidget {
   CheckOut({Key? key}) : super(key: key);
-
+  int? id;
+  String? date;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => CheckOutCubit(),
+      create: (BuildContext context) => CheckOutCubit()..getAddress(),
       child: BlocConsumer<CheckOutCubit, CheckOutStates>(
-        listener: (BuildContext context, state) {},
+        listener: (BuildContext context, state) {
+          if (state is SuccessCreateOrderState) {
+            navigateTo(context: context, widget: SureLayout());
+          }
+        },
         builder: (BuildContext context, Object? state) {
           var cubit = CheckOutCubit.get(context);
           return Scaffold(
-            appBar: AppBar(),
+            appBar: AppBar(
+              title: TextButton(
+                  onPressed: () {
+                    cubit.getAddress();
+                  },
+                  child: Text('Hi')),
+            ),
             body: Column(
               children: [
                 Expanded(
@@ -28,18 +44,22 @@ class CheckOut extends StatelessWidget {
                       cubit.continueButton(
                         context,
                         AlertDialog(
-                          title: const Text("Are you sure!!"),
-                          content: const Text("Order completed!"),
+                          title: Text("Are you sure!!".tr()),
+                          content: Text("Order completed!".tr()),
                           actions: [
                             MaterialButton(
-                              child: const Text("Cancel"),
+                              child: Text("Cancel".tr()),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                             ),
                             MaterialButton(
-                              child: const Text("Ok"),
-                              onPressed: () {},
+                              child: Text("Ok".tr()),
+                              onPressed: () {
+                                cubit.createOrder(
+                                    id: id.toString(),
+                                    date: cubit.dateController.text);
+                              },
                             ),
                           ],
                         ),
@@ -52,96 +72,77 @@ class CheckOut extends StatelessWidget {
                     steps: [
                       Step(
                           isActive: cubit.currentStep >= 0,
-                          title: const Text('Choose your Address'),
-                          content: Column(
-                            children: [
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2(
-                                  //buttonDecoration: BoxDecoration(color: Colors.green),
-                                  barrierColor: Colors.transparent,
-                                  iconDisabledColor: Colors.green,
-                                  iconEnabledColor: Colors.green,
-                                  focusColor: Colors.green,
-                                  selectedItemHighlightColor: Colors.green,
-                                  hint: Text(
-                                    'Select Item',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                    maxLines: 1,
-                                  ),
-                                  items: cubit.items
-                                      .map((item) => DropdownMenuItem<String>(
-                                            value: item,
-                                            child: Text(
-                                              item,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                              maxLines: 2,
-                                            ),
-                                          ))
-                                      .toList(),
-                                  value: cubit.selectedValue,
-                                  onChanged: (value) {
-                                    cubit.onChangeValue(value: value as String);
-                                  },
-                                  buttonHeight: 100,
-                                  buttonWidth: double.infinity,
-                                  itemHeight: 40,
-                                ),
-                              )
-                            ],
-                          )),
+                          title: Text('Choose your Address'.tr()),
+                          content: SizedBox(
+                              height: MediaQuery.of(context).size.height / 3,
+                              child: ListView.builder(
+                                  itemCount: cubit.list.length,
+                                  itemBuilder: (context, index) {
+                                    var item = cubit.list[index];
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          color: cubit.currentIndex == index
+                                              ? Colors.green
+                                              : Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(5.0)),
+                                      child: ListTile(
+                                        textColor: cubit.currentIndex == index
+                                            ? Colors.white
+                                            : Colors.black,
+                                        onTap: () {
+                                          cubit.changeAddress(index: index);
+                                          id = item['id'];
+                                          print(item['id']);
+                                        },
+                                        title: Container(
+                                          child: customText(
+                                            text: item['street'] +
+                                                ' ' +
+                                                item['districtNameAr'] +
+                                                ' ' +
+                                                item['cityNameAr'].toString(),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }))),
                       Step(
                           isActive: cubit.currentStep >= 1,
-                          title: const Text('Choose your date'),
+                          title: Text('Choose your date'.tr()),
                           content: Column(
                             children: [
+                              const SizedBox(
+                                height: 20.0,
+                              ),
                               CustomTextFormField(
                                   validator: (value) {},
                                   controller: cubit.dateController,
-                                  hintText: 'Select your date',
+                                  hintText: 'Select your date'.tr(),
                                   onTap: () {
+                                    DateTime now = DateTime.now()
+                                        .add(const Duration(days: 1));
                                     showDatePicker(
                                             context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now(),
-                                            lastDate: DateTime(2050))
+                                            initialDate: now,
+                                            firstDate: now,
+                                            lastDate: DateTime.now()
+                                                .add(const Duration(days: 30)))
                                         .then((value) {
                                       cubit.dateController.text =
-                                          DateFormat.yMMMd().format(value!);
+                                          DateFormat('yyyy-MM-dd').format(value!);
+                                      print(cubit.dateController.text);
                                       // cubit.dateController.text as DateTime= value;
-                                      print(value.toString());
                                     }).catchError((error) {
                                       cubit.dateController.clear();
-                                      print(error.toString());
                                     });
                                   }),
-                              const SizedBox(height: 20.0,),
-                              CustomTextFormField(
-                                  validator: (value) {},
-                                  controller: cubit.timeController,
-                                  hintText: 'Select Time',
-                                  isDense: true,
-                                  onTap: () {
-                                    showTimePicker(
-                                        context: context,
-                                        initialTime: TimeOfDay.now())
-                                        .then((value) {
-                                      print(value.toString());
-                                      cubit.timeController.text = value!.format(context);
-                                    }).catchError((error) {
-                                      cubit.timeController.clear();
-                                    });
-                                  }),
+                              const SizedBox(
+                                height: 20.0,
+                              ),
                             ],
                           )),
-                      Step(
-                          isActive: cubit.currentStep >= 2,
-                          title: const Text('Add Notes'),
-                          content: const Text('This content for Step 3')),
+
                     ],
                     onStepTapped: (index) {
                       cubit.onStepTapped(index: index);

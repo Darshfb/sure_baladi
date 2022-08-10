@@ -1,16 +1,17 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
-import 'package:surebaladi/layout/sure_layout/drawer.dart';
-import 'package:surebaladi/modules/auth/login/login_screen.dart';
+import 'package:surebaladi/layout/sure_layout/widgets/drawer.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/constants/const.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
+import 'package:surebaladi/shared/utilis/constant/app_strings.dart';
 
 class SureLayout extends StatelessWidget {
   SureLayout({Key? key}) : super(key: key);
@@ -19,15 +20,13 @@ class SureLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => HomeCubit()..getCategory()..getHomeProductData()..getCartData(),
+      create: (BuildContext context) => HomeCubit()
+        ..getCategory()
+        ..getHomeProductData()
+        ..getCartData()
+        ..getCategoryProduct(),
       child: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (BuildContext context, state) {
-          if(state is ErrorCartState){
-            CacheHelper.clearAll().then((value){
-              navigateTo(context: context, widget: LoginScreen());
-            });
-          }
-        },
+        listener: (BuildContext context, state) {},
         builder: (BuildContext context, Object? state) {
           var cubit = HomeCubit.get(context);
           return AdvancedDrawer(
@@ -46,7 +45,25 @@ class SureLayout extends StatelessWidget {
             child: Scaffold(
               // end: Colors.black,
               appBar: AppBar(
-                backgroundColor: AppColors.primaryColor,
+                // centerTitle: true,
+                backgroundColor: const Color(0xff119744),
+                actions: [
+                  if (cubit.isCategoryAdd && cubit.currentIndex == 3)
+                    IconButton(
+                        onPressed: () {
+                          cubit.getProduct();
+                        },
+                        icon: const Icon(
+                          IconBroken.arrowLeft2,
+                          color: Colors.white,
+                        )),
+                ],
+                title: customText(
+                  text: CacheHelper.getData(key: token) == null ? '${AppStrings.welcome} ' :
+                  '${AppStrings.welcome} ' '${CacheHelper.getData(key: 'userName')}!!',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
                 leading: IconButton(
                   onPressed: _handleMenuButtonPressed,
                   icon: ValueListenableBuilder<AdvancedDrawerValue>(
@@ -66,27 +83,25 @@ class SureLayout extends StatelessWidget {
               ),
               body: cubit.screens[cubit.currentIndex],
               bottomNavigationBar: ConvexAppBar.badge(
-                const {
-                  2: '',
-                  3: ''
-                },
+                {2: cubit.cartSize != '0' ? "+1" : " ", 3: ''},
                 badgeMargin: const EdgeInsets.only(
                   bottom: 30,
                   right: 40,
                 ),
                 top: -21,
-                height: 50,
+                height: 52,
                 backgroundColor: Colors.grey.shade200,
                 color: Colors.grey.shade800,
                 activeColor: AppColors.primaryColor,
                 onTap: (index) {
                   cubit.changeBottomNav(index);
                 },
-                items: const [
-                  TabItem(icon: Icons.home_outlined, title: 'Home'),
-                  TabItem(icon: IconBroken.category, title: 'Category'),
-                  TabItem(icon: Icons.shopping_cart, title: 'Cart'),
-                  TabItem(icon: Icons.favorite, title: 'Favorite'),
+                elevation: 5,
+                items: [
+                  TabItem(icon: Icons.home_outlined, title: 'Home'.tr()),
+                  TabItem(icon: IconBroken.category, title: 'Category'.tr()),
+                  TabItem(icon: Icons.shopping_cart, title: 'Cart'.tr()),
+                  TabItem(icon: Icons.favorite, title: 'Favorite'.tr()),
                 ],
               ),
               // BottomNavigationBar(

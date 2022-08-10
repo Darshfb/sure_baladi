@@ -52,8 +52,16 @@ Widget CustomTextFormField({
     );
 
 Widget CustomTextButton(
-        {required VoidCallback onPressed, required String text}) =>
-    TextButton(onPressed: onPressed, child: Text(text));
+        {required VoidCallback onPressed,
+        required String text,
+        double? fontSize,
+        Color color = Colors.blue}) =>
+    TextButton(
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(color: color, fontSize: fontSize),
+        ));
 
 Widget CustomButton({
   required VoidCallback onPressed,
@@ -127,4 +135,23 @@ Widget CustomPorgressIndicator() => const Center(
         backgroundColor: Colors.white,
         valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
       ),
+    );
+
+Widget customText({
+  required String text,
+  Color? color,
+  double? fontSize,
+  FontWeight? fontWeight,
+  int? maxLines,
+  TextOverflow? overflow,
+}) =>
+    Text(
+      text,
+      style: TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        overflow: overflow
+      ),
+      maxLines: maxLines,
     );

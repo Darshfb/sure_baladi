@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
+import 'package:surebaladi/layout/test_category/category_screen.dart';
 import 'package:surebaladi/models/cart_models/cart_models.dart';
 import 'package:surebaladi/models/category_model/all_categories_model.dart';
 import 'package:surebaladi/models/category_model/category_product_model.dart';
@@ -9,7 +11,6 @@ import 'package:surebaladi/models/home_models/home_models.dart';
 import 'package:surebaladi/modules/cart_list/cart_list_screen.dart';
 import 'package:surebaladi/modules/category/category_screen.dart';
 import 'package:surebaladi/modules/home/home_screen.dart';
-import 'package:surebaladi/modules/wish_list/wish_list_screen.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/Network/dio_helper.dart';
 import 'package:surebaladi/shared/constants/const.dart';
@@ -23,7 +24,8 @@ class HomeCubit extends Cubit<HomeStates> {
     HomeScreen(),
     const CategoryScreen(),
     const CartScreen(),
-    const WishListScreen(),
+     TestCategoryScreen(),
+    // const WishListScreen(),
   ];
 
   int currentIndex = 0;
@@ -94,6 +96,7 @@ class HomeCubit extends Cubit<HomeStates> {
   CategoryProductModel? categoryProductModel;
   bool? lastProduct;
   List<dynamic> productContent = [];
+
   void getCategoryProduct({int? id, bool isRefresh = true}) {
     getCartData();
     emit(GetCategoryProductLoadingState());
@@ -102,16 +105,15 @@ class HomeCubit extends Cubit<HomeStates> {
             query: {"pageNo": productPageNo, "pageSize": 10, "sortBy": "id"},
             Token: TOKEN)
         .then((value) {
-          if(value.statusCode ==200){
-            print('......................................');
-            print('This is Status code ${value.statusCode}');
-            print('......................................');
-          }
+      if (value.statusCode == 200) {
+        print('......................................');
+        print('This is Status code ${value.statusCode}');
+        print('......................................');
+      }
       categoryProductModel = CategoryProductModel.fromJson(value.data);
-      if(isRefresh)
-      {
+      if (isRefresh) {
         productContent = categoryProductModel!.content;
-      }else{
+      } else {
         productContent.addAll(categoryProductModel!.content);
       }
       emit(GetCategoryProductSuccessState());
@@ -129,15 +131,34 @@ class HomeCubit extends Cubit<HomeStates> {
     });
   }
 
+  bool isCategoryAdd = false;
+
+  void getProduct(){
+
+    isCategoryAdd = ! isCategoryAdd;
+    print(isCategoryAdd);
+    emit(ChangeCategoryState());
+  }
+  Widget? mainWidget;
+  void changeWidget({Widget? firstWidget, Widget? secondWidget,}){
+    // if(isCategoryAdd){
+    //   isCategoryAdd = !isCategoryAdd;
+    //   mainWidget = firstWidget;
+    // }else{
+    //   isCategoryAdd = !isCategoryAdd;
+    //   mainWidget = secondWidget;
+    // }
+  }
   //  cart
 
   CartModels? cartModels;
-
+  String? cartSize;
   // String? cartLen;
-  void getCartData()  {
+  void getCartData() {
     emit(LoadingCartState());
     DioHelper.getData(url: 'cart', Token: TOKEN).then((value) {
       cartModels = CartModels.fromJson(value.data);
+      cartSize = cartModels!.cartItems.length.toString();
       // cartLen = value.data['cartItems'].length.toString();
       if (kDebugMode) {
         print('cart Screen is ${value.data}');
@@ -164,7 +185,7 @@ class HomeCubit extends Cubit<HomeStates> {
     emit(LoadingIncreaseItemToCartState());
     DioHelper.postData(url: 'cart/1', data: {"productId": id}, Token: TOKEN)
         .then((value) {
-      emit(SuccessIncreaseItemToCartState());
+      // emit(SuccessIncreaseItemToCartState());
       getCartData();
     }).catchError((error) {
       if (kDebugMode) {
@@ -197,5 +218,23 @@ class HomeCubit extends Cubit<HomeStates> {
         : result.isEmpty
             ? null
             : result.first;
+  }
+
+
+  //Localization
+  void changeLanguage(BuildContext context) {
+    if (EasyLocalization.of(context)!.locale == const Locale('en', 'US')) {
+      context.setLocale(const Locale('ar', 'EG'));
+    } else {
+      context.setLocale(const Locale('en', 'US'));
+    }
+    emit(ChangeLanguageState());
+  }
+  bool isLang = false;
+  void changeLang({required BuildContext context}){
+    isLang = !isLang;
+    print(isLang.toString());
+    changeLanguage(context);
+    // emit(ChangeLangState());
   }
 }

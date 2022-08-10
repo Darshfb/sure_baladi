@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,14 +61,24 @@ class ItemCategoryProduct extends StatelessWidget {
                                   clipBehavior: Clip.antiAliasWithSaveLayer,
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
-                                    child: FadeInImage.assetNetwork(
-                                      fit: BoxFit.contain,
-                                      placeholder: 'assets/images/loading.gif',
+                                    child: CachedNetworkImage(
+                                      fit: BoxFit.cover,
                                       width: MediaQuery.of(context).size.width,
                                       height: 140,
-                                      image:
-                                      '${productCubit[index].productImage}',
+                                      imageUrl: productCubit[index].productImage!,
+                                      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                      errorWidget: (context, url, error) => const Image(image: AssetImage('assets/images/sure_logo.png')),
                                     ),
+
+
+                                    // FadeInImage.assetNetwork(
+                                    //   fit: BoxFit.contain,
+                                    //   placeholder: 'assets/images/loading.gif',
+                                    //   width: MediaQuery.of(context).size.width,
+                                    //   height: 140,
+                                    //   image:
+                                    //   '${productCubit[index].productImage}',
+                                    // ),
                                   ),
                                 ),
                               ),
@@ -127,7 +139,11 @@ class ItemCategoryProduct extends StatelessWidget {
                                   cubit.increaseAddToCart(
                                       id: productCubit[index].id!);
                                 },
-                                child: const Text('Add'),
+                                child: customText(
+                                    text: 'Add'.tr(),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18.0),
                               )
                                   : Card(
                                 child: SizedBox(
@@ -216,7 +232,13 @@ class ItemCategoryProduct extends StatelessWidget {
               child: CircularProgressIndicator(),
             ));
         } else{
-          return const Center(child: CircularProgressIndicator(),);
+          return  Center(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              SizedBox(height: 200.0,),
+              CircularProgressIndicator(),
+            ],
+          ),);
         }
       },
     );
