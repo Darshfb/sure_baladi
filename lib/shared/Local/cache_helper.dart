@@ -15,7 +15,8 @@ class CacheHelper {
     return sharedPreferences!.getBool(key);
   }
 
-  static Future<bool> saveData({required String key,required dynamic value}) async {
+  static Future<bool> saveData(
+      {required String key, required dynamic value}) async {
     if (value is String) {
       return await sharedPreferences!.setString(key, value);
     }

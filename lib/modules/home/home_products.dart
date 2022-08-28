@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,22 +62,31 @@ class HomeProducts extends StatelessWidget {
                                             Clip.antiAliasWithSaveLayer,
                                         child: Padding(
                                           padding: const EdgeInsets.all(2.0),
-                                          child: FadeInImage.assetNetwork(
-                                            fit: BoxFit.contain,
-                                            placeholder:
-                                                'assets/images/loading.gif',
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                            width: MediaQuery.of(context).size.width,
                                             height: 140,
-                                            image:
-                                                '${product[index].productImage}',
+                                            imageUrl: product[index].productImage!,
+                                            placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                            errorWidget: (context, url, error) => const Image(image: AssetImage('assets/images/sure_logo.png')),
                                           ),
+
+                                          // FadeInImage.assetNetwork(
+                                          //   fit: BoxFit.contain,
+                                          //   placeholder:
+                                          //       'assets/images/loading.gif',
+                                          //   width: MediaQuery.of(context)
+                                          //       .size
+                                          //       .width,
+                                          //   height: 140,
+                                          //   image:
+                                          //       '${product[index].productImage}',
+                                          // ),
                                         ),
                                       ),
                                     ),
                                     Text(
-                                      '${product[index].productNameAr}',
+                                      '${product[index].productName}',
                                       style: const TextStyle(
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -133,89 +144,108 @@ class HomeProducts extends StatelessWidget {
                                               cubit.increaseAddToCart(
                                                   id: product[index].id!);
                                             },
-                                            child: const Text('Add'),
+                                            child: Text('Add'.tr()),
                                           )
-                                        : Card(
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              height: 35,
+                                        : Row(
+                                          children: [
+                                            FloatingActionButton.small(
+                                              elevation: 5,
+                                              backgroundColor: Colors.red,
+                                              onPressed: () {
+                                                cubit.removeFromCart(
+                                                    id: product[index]
+                                                        .id!);
+                                              },
+                                              child: const Icon(
+                                                IconBroken.delete, color: Colors.white,),
+                                            ),
+                                            Expanded(
+                                              child: Card(
+                                      shape:
+                                      RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    5.0)),
+                                      clipBehavior: Clip
+                                                .antiAliasWithSaveLayer,
+                                      child: SizedBox(
+                                              width:
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                                  3.2,
+                                              height: 30,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
                                                 children: [
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
                                                   Expanded(
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        cubit.removeFromCart(
-                                                            id: product[index]
-                                                                .id!);
-                                                      },
-                                                      child: const SizedBox(
-                                                          width: 20,
-                                                          child: Icon(
-                                                            IconBroken.delete,
-                                                            color: Colors.red,
-                                                          )),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Expanded(
-                                                    child: InkWell(
-                                                        onTap: () {
-                                                          cubit
-                                                              .increaseAddToCart(
-                                                                  id: product[
-                                                                          index]
-                                                                      .id!);
-                                                        },
-                                                        child: const Icon(
-                                                            Icons.add)),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(
-                                                    itemInCart.quantity
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        fontSize: 15),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Expanded(
-                                                    child: InkWell(
-                                                      onTap: () {
+                                                    child:
+                                                    FloatingActionButton(
+                                                      backgroundColor:
+                                                      AppColors
+                                                          .primaryColor,
+                                                      shape:
+                                                      const RoundedRectangleBorder(
+                                                        side:
+                                                        BorderSide(
+                                                          color: Colors
+                                                              .transparent,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
                                                         cubit.decreaseAddToCart(
                                                             id: product[index]
-                                                                .id!);
+                                                                .id!
+                                                        );
                                                       },
-                                                      child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  bottom: 20),
-                                                          child: const Icon(
-                                                              Icons.minimize)),
+                                                      child: const Icon(
+                                                          Icons.remove),
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    width: 10,
+                                                  Expanded(
+                                                    child: Center(
+                                                      child: Text(
+                                                        itemInCart.quantity
+                                                            .toString(),
+                                                        style:
+                                                        const TextStyle(
+                                                            fontSize:
+                                                            15),
+                                                      ),
+                                                    ),
                                                   ),
-                                                  // Expanded(child: CustomButton(onPressed: (){}, child: const Icon(Icons.add),)),
-                                                  // Text('1'),
-                                                  // Expanded(child: CustomButton(onPressed: (){}, child: Container(
-                                                  //     margin: const EdgeInsets.only(bottom: 10),
-                                                  //     child: const Icon(Icons.minimize)),)),
+                                                  Expanded(
+                                                    child:
+                                                    FloatingActionButton(
+                                                      backgroundColor:
+                                                      AppColors
+                                                          .primaryColor,
+                                                      shape:
+                                                      const RoundedRectangleBorder(
+                                                        side:
+                                                        BorderSide(
+                                                          color: Colors
+                                                              .transparent,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        cubit
+                                                            .increaseAddToCart(
+                                                            id: product[
+                                                            index]
+                                                                .id!);
+                                                      },
+                                                      child: const Icon(
+                                                          Icons.add),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
+                                      ),
+                                    ),
                                             ),
-                                          ),
+                                          ],
+                                        ),
                                   ],
                                 ),
                               ),
@@ -229,12 +259,12 @@ class HomeProducts extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: OutlinedButton(
                                 onPressed: () {
-                                  cubit.getHomeProductData(isRefresh: false);
+                                  cubit.getHomeProductData(isRefresh: false, context: context);
                                   // print(product.length.toString());
                                 },
-                                child: const Text(
-                                  'Load More',
-                                  style: TextStyle(
+                                child: Text(
+                                  'Load More'.tr(),
+                                  style: const TextStyle(
                                     color: AppColors.primaryColor,
                                   ),
                                 ),
@@ -250,14 +280,21 @@ class HomeProducts extends StatelessWidget {
                       )
                     ],
                   ),
-              fallback: (context) => const Center(
-                    child: CircularProgressIndicator(),
-                  ));
+              fallback: (context) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    SizedBox(height: 600.0,),
+                    Center(child: CircularProgressIndicator()),
+                  ],
+                ),
+              ));
         } else {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
+                SizedBox(height: 600.0,),
                 Center(child: CircularProgressIndicator()),
               ],
             ),

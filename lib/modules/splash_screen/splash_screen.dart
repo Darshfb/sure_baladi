@@ -19,13 +19,12 @@ class _SplashScreenState extends State<SplashScreen> {
   _startDelay() {
     _timer = Timer(const Duration(milliseconds: 2000), _goNext);
   }
-
+String firstToken = (CacheHelper.getData(key: token) == null) ? '' : CacheHelper.getData(key: token);
   _goNext() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) =>
-                savedToken.isNotEmpty ? SureLayout() : LoginScreen()));
+            builder: (BuildContext context) => SureLayout()));
   }
 
   @override

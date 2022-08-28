@@ -28,7 +28,7 @@ class RegisterScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back_ios,
                 color: AppColors.primaryColor,
               )),
@@ -54,9 +54,9 @@ class RegisterScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
                         children: [
-                          const Text(
+                           Text(
                             AppStrings.joinNow,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Color(
                                 0xff119477,
@@ -65,7 +65,7 @@ class RegisterScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 15.0),
-                          const Text(
+                           Text(
                             AppStrings.joinData,
                           ),
                           const SizedBox(height: 15.0),
@@ -103,7 +103,7 @@ class RegisterScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
+                                Text(
                                   AppStrings.acceptAllThe,
                                 ),
                                 const SizedBox(
@@ -132,7 +132,7 @@ class RegisterScreen extends StatelessWidget {
                                         fullName: userNameController.text));
                               }
                             },
-                            child: const Text(AppStrings.registerNow),
+                            child: Text(AppStrings.registerNow),
                           ),
                           const SizedBox(height: 7.0),
                         ],
@@ -148,8 +148,8 @@ class RegisterScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            AppStrings.AlreadyHaveAccount,
+                          Text(
+                            AppStrings.alreadyHaveAccount,
                           ),
                           const SizedBox(
                             width: 5,

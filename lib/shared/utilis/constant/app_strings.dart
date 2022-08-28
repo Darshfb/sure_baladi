@@ -1,22 +1,25 @@
+import 'package:easy_localization/easy_localization.dart';
+
 class AppStrings {
-  static const String welcome = 'Welcome!';
-  static const String userData = 'Use your email & password to login';
-  static const String enterYourEmail = 'Enter Your Email';
-  static const String plzEnterYourEmail = 'Please Enter Your Email';
-  static const String enterYourPassword = 'Enter Your Password';
-  static const String plzEnterYourPassword = 'Please Enter Your Password';
-  static const String login = 'LOGIN';
-  static const String forgotPassword = 'Forgot Your Password?';
-  static const String resetHere = 'Reset Here';
-  static const String registerNow = 'Register Now';
-  static const String dontHaveAccount = 'Don\'t Have Any Account?';
-  static const String rights = 'All Rights Reserved';
-  static const String joinNow = 'Join Now!';
-  static const String joinData = 'Setup A New Account In A minute';
-  static const String enterRepeatPassword = 'Enter Repeat Password';
-  static const String acceptAllThe = 'Accept All The';
-  static const String termsConditions = 'Terms & Conditions';
-  static const String AlreadyHaveAccount = 'Already Have An Account';
-  static const String loginHere = 'Login Here';
-  static const String enterYourName = 'Enter Your Name';
+  static String welcome = 'Welcome!'.tr();
+  static String title = 'Sure Baladi'.tr();
+  static String userData = 'Login with your email & password'.tr();
+  static String enterYourEmail = 'Enter Your Email'.tr();
+  static String plzEnterYourEmail = 'Please Enter Your Email'.tr();
+  static String enterYourPassword = 'Enter Your Password'.tr();
+  static String plzEnterYourPassword = 'Please Enter Your Password'.tr();
+  static String login = 'LOGIN'.tr();
+  static String forgotPassword = 'Forgot Your Password?'.tr();
+  static String resetHere = 'Reset Here'.tr();
+  static String registerNow = 'Register Now'.tr();
+  static String dontHaveAccount = 'Don\'t Have Any Account?'.tr();
+  static String rights = 'All Rights Reserved'.tr();
+  static String joinNow = 'Join Now!'.tr();
+  static String joinData = 'Setup A New Account In A minute'.tr();
+  static String enterRepeatPassword = 'Enter Repeat Password'.tr();
+  static String acceptAllThe = 'Accept All The'.tr();
+  static String termsConditions = 'Terms & Conditions'.tr();
+  static String alreadyHaveAccount = 'Already Have An Account'.tr();
+  static String loginHere = 'Login Here'.tr();
+  static String enterYourName = 'Enter Your Name'.tr();
 }

@@ -4,17 +4,17 @@ import 'package:flutter/services.dart';
 ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
+      backgroundColor: Color(0xff119744),
+      elevation: 5.0,
       systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.dark),
+          statusBarColor: Color(0xff119744),
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.light),
       titleTextStyle: TextStyle(
-        color: Colors.black,
+        color: Colors.white,
       ),
       iconTheme: IconThemeData(color: Colors.black)),
-  primarySwatch: Colors.deepOrange,
+  primarySwatch: Colors.green,
   textTheme: const TextTheme(
       bodyText1: TextStyle(
           fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.black)),

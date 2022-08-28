@@ -14,8 +14,8 @@ import 'package:surebaladi/shared/constants/const.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
-class ItemCategoryProduct extends StatelessWidget {
-  const ItemCategoryProduct({Key? key,}) : super(key: key);
+class ItemCategoryProductMob extends StatelessWidget {
+  const ItemCategoryProductMob({Key? key,}) : super(key: key);
   // final VoidCallback? onPressed;
   // final int categoryProductId;
 
@@ -27,7 +27,7 @@ class ItemCategoryProduct extends StatelessWidget {
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
         var productCubit = cubit.productContent;
-        if(cubit.categoryProductModel != null && cubit.cartModels != null) {
+        if(cubit.categoryProductModel != null) {
           return ConditionalBuilder(
               condition: productCubit.isNotEmpty,
               builder: (context) => Column(

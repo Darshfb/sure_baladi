@@ -1,10 +1,15 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
-import 'package:surebaladi/layout/sure_layout/drawer.dart';
+import 'package:surebaladi/layout/sure_layout/widgets/drawer.dart';
+import 'package:surebaladi/shared/Local/cache_helper.dart';
+import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/constants/const.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
@@ -16,7 +21,10 @@ class SureLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => HomeCubit()..getCategory()..getHomeProductData()..getCartData(),
+      create: (BuildContext context) => HomeCubit()
+        ..getCategory()
+        ..getHomeProductData(context: context)
+        ..getCartData(),
       child: BlocConsumer<HomeCubit, HomeStates>(
         listener: (BuildContext context, state) {},
         builder: (BuildContext context, Object? state) {
@@ -37,7 +45,28 @@ class SureLayout extends StatelessWidget {
             child: Scaffold(
               // end: Colors.black,
               appBar: AppBar(
-                backgroundColor: AppColors.primaryColor,
+                // centerTitle: true,
+                elevation: 0,
+                backgroundColor: const Color(0xff119744),
+                actions: [
+                  if (cubit.isCategoryAdd && cubit.currentIndex == 1)
+                    TextButton(
+                      onPressed: () {
+                        cubit.getProduct();
+                      },
+                      child: Text('Back'.tr(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          )),
+                    ),
+                ],
+                title: customText(
+                  text: CacheHelper.getData(key: token) == null
+                      ? '${'Welcome! '.tr()} '
+                      : '${'Welcome! '.tr()}${CacheHelper.getData(key: 'userName')}!!',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
                 leading: IconButton(
                   onPressed: _handleMenuButtonPressed,
                   icon: ValueListenableBuilder<AdvancedDrawerValue>(
@@ -55,79 +84,51 @@ class SureLayout extends StatelessWidget {
                   ),
                 ),
               ),
-              body: cubit.screens[cubit.currentIndex],
-              bottomNavigationBar: ConvexAppBar.badge(
-                const {
-                  2: '',
-                  3: ''
+              body: OfflineBuilder(
+                connectivityBuilder: (
+                  BuildContext context,
+                  ConnectivityResult connectivity,
+                  Widget child,
+                ) {
+                  final bool connected =
+                      connectivity != ConnectivityResult.none;
+                  if (connected) {
+                    return WillPopScope(
+                        onWillPop: () {
+                          return cubit.onWillPop(context: context);
+                        },
+                        child: cubit.screens[cubit.currentIndex]);
+                  } else {
+                    return buildOfflineWidget();
+                  }
                 },
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+              // cubit.screens[cubit.currentIndex],
+              bottomNavigationBar: ConvexAppBar.badge(
+                const {2: '', 3: ''},
                 badgeMargin: const EdgeInsets.only(
                   bottom: 30,
                   right: 40,
                 ),
                 top: -21,
-                height: 50,
+                height: 52,
                 backgroundColor: Colors.grey.shade200,
                 color: Colors.grey.shade800,
                 activeColor: AppColors.primaryColor,
                 onTap: (index) {
                   cubit.changeBottomNav(index);
                 },
-                items: const [
-                  TabItem(icon: Icons.home_outlined, title: 'Home'),
-                  TabItem(icon: IconBroken.category, title: 'Category'),
-                  TabItem(icon: Icons.shopping_cart, title: 'Cart'),
-                  TabItem(icon: Icons.favorite, title: 'Favorite'),
+                elevation: 5,
+                items: [
+                  TabItem(icon: Icons.home_outlined, title: 'Home'.tr()),
+                  TabItem(icon: IconBroken.category, title: 'Category'.tr()),
+                  TabItem(icon: Icons.shopping_cart, title: 'Cart'.tr()),
+                  TabItem(icon: Icons.favorite, title: 'Favorite'.tr()),
                 ],
               ),
-              // BottomNavigationBar(
-              //   selectedItemColor: AppColors.primaryColor,
-              //     onTap: (index) {
-              //       cubit.changeBottomNav(index);
-              //     },
-              //     currentIndex: cubit.currentIndex,
-              //     type: BottomNavigationBarType.fixed,
-              //     items: [
-              //       const BottomNavigationBarItem(
-              //           icon: Icon(
-              //             Icons.home_outlined,
-              //           ),
-              //           label: 'Home'),
-              //       const BottomNavigationBarItem(
-              //           icon: Icon(
-              //             Icons.menu_open,
-              //           ),
-              //           label: 'Category'),
-              //       BottomNavigationBarItem(
-              //           icon: Stack(
-              //             alignment: Alignment.topRight,
-              //             children:  const [
-              //               Icon(
-              //                 Icons.shopping_cart,
-              //               ),
-              //               Positioned(
-              //                 bottom: 8,
-              //                 left: 6,
-              //                 child: CircleAvatar(
-              //                   radius: 20,
-              //                   backgroundColor: Colors.red,
-              //                   child: Text('12'),
-              //                 ),
-              //               )
-              //             ],
-              //           ),
-              //           label: 'Cart'),
-              //       BottomNavigationBarItem(
-              //           icon: Icon(
-              //             Icons.favorite,
-              //           ),
-              //           label: 'Favorite'),
-              //       BottomNavigationBarItem(
-              //           icon: Icon(
-              //             Icons.compare_arrows,
-              //           ),
-              //           label: 'Compare'),
-              //     ]),
             ),
           );
         },
@@ -139,5 +140,63 @@ class SureLayout extends StatelessWidget {
     // NOTICE: Manage Advanced Drawer state through the Controller.
     // _advancedDrawerController.value = AdvancedDrawerValue.visible();
     _advancedDrawerController.showDrawer();
+  }
+
+  Widget buildOfflineWidget() {
+    return Center(
+      child: Container(
+        height: 320,
+        width: 320,
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Can\'t connect... check your internet'.tr(),
+              style: const TextStyle(color: Colors.grey, fontSize: 22),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SvgPicture.asset(
+              'assets/images/check_internet.svg',
+              height: 150,
+              width: 150,
+              color: Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<bool> onWillPop({required BuildContext context}) async {
+    final shouldPop = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.teal,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        elevation: 0,
+        title: Text('Are you sure?'.tr()),
+        content: Text('Do you want close The app?'.tr()),
+        actions: <Widget>[
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No'.tr()),
+          ),
+          MaterialButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Yes'.tr()),
+          ),
+        ],
+      ),
+    );
+
+    return shouldPop ?? false;
   }
 }

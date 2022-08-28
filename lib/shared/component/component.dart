@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 Widget CustomTextFormField({
   required FormFieldValidator<String> validator,
-  required TextInputType keyboardType,
+  TextInputType? keyboardType,
   required TextEditingController controller,
   required String hintText,
   IconData? prefixIcon,
@@ -14,6 +14,7 @@ Widget CustomTextFormField({
   bool isDense = true,
   ValueChanged<String>? onChanged,
   GestureTapCallback? onTap,
+  int? maxLines,
 }) =>
     TextFormField(
       onTap: onTap,
@@ -23,6 +24,7 @@ Widget CustomTextFormField({
       controller: controller,
       obscureText: obscureText,
       onChanged: onChanged,
+      maxLines: maxLines,
       decoration: InputDecoration(
         isDense: isDense,
         hintText: hintText,
@@ -52,8 +54,16 @@ Widget CustomTextFormField({
     );
 
 Widget CustomTextButton(
-        {required VoidCallback onPressed, required String text}) =>
-    TextButton(onPressed: onPressed, child: Text(text));
+        {required VoidCallback onPressed,
+        required String text,
+        double? fontSize,
+        Color color = Colors.blue}) =>
+    TextButton(
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(color: color, fontSize: fontSize),
+        ));
 
 Widget CustomButton({
   required VoidCallback onPressed,
@@ -127,4 +137,22 @@ Widget CustomPorgressIndicator() => const Center(
         backgroundColor: Colors.white,
         valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
       ),
+    );
+
+Widget customText({
+  required String text,
+  Color? color,
+  double? fontSize,
+  FontWeight? fontWeight,
+  int? maxLines,
+  TextOverflow? overflow,
+}) =>
+    Text(
+      text,
+      style: TextStyle(
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          overflow: overflow),
+      maxLines: maxLines,
     );

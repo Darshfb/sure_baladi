@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:surebaladi/shared/component/component.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
-class SliderBanner extends StatelessWidget {
-  const SliderBanner({Key? key}) : super(key: key);
+class MobSliderBanner extends StatelessWidget {
+  const MobSliderBanner({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class SliderBanner extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 15, left: 10.0),
                 child: CustomButton(
-                  backgroundColor: AppColors.primaryColor,
+                    backgroundColor: AppColors.primaryColor,
                     textColor: Colors.white,
                     onPressed: (){},
                     child: Text('Shop Now'.tr())),

@@ -30,21 +30,13 @@ class CartItemsModel {
 
 class ProductCartItemModel {
   int? id;
-  String? productNameAr;
-  String? productNameEn;
+  String? productName;
   String? productImage;
 
   ProductCartItemModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    productNameAr = json['productNameAr'];
-    productNameEn = json['productNameEn'];
+    productName = json['productName'];
     productImage = json['productImage'];
   }
 }
 
-/*
-                "id": 325,
-                "productNameAr": "تايجر\" شطه وليمون",
-                "productNameEn": "تايجر\" شطه وليمون",
-                "price": 5.0,
-  */
