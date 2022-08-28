@@ -25,3 +25,39 @@ class ErrorCreateOrderState extends CheckOutStates {
 
   ErrorCreateOrderState({required this.error});
 }
+
+class SuccessRemoveAddressState extends CheckOutStates {}
+
+class LoadingRemoveAddressState extends CheckOutStates {}
+
+class ErrorRemoveAddressState extends CheckOutStates {
+  final String error;
+
+  ErrorRemoveAddressState({required this.error});
+}
+
+class LoadingGetCityState extends CheckOutStates {}
+
+class SuccessGetCityState extends CheckOutStates {}
+
+class ErrorGetCityState extends CheckOutStates {
+  final String error;
+
+  ErrorGetCityState({required this.error});
+}
+
+class LoadingGetDistrictState extends CheckOutStates {}
+
+class ErrorGetDistrictState extends CheckOutStates {
+  final String error;
+
+  ErrorGetDistrictState({required this.error});
+}
+class SuccessGetDistrictState extends CheckOutStates {}
+
+class CreateErrorNewAddress extends CheckOutStates{
+  final String error;
+
+  CreateErrorNewAddress({required this.error});
+}
+class CreateLoadingNewAddress extends CheckOutStates{}

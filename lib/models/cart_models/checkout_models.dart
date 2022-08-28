@@ -1,5 +1,5 @@
 import 'dart:convert';
-  List<AddressContent> addressContent(String str) => List<AddressContent>.from(json.decode(str).map((x) => AddressContent.fromJson(x)));
+  // List<AddressContent> addressContent(String str) => List<AddressContent>.from(json.decode(str).map((x) => AddressContent.fromJson(x)));
 
 class AddressModel {
   List<AddressContent> content = [];
@@ -14,15 +14,15 @@ class AddressModel {
 class AddressContent {
   int? id;
   String? country;
-  String? districtNameAr;
+  String? districtName;
   String? street;
-  String? cityNameAr;
+  String? cityName;
 
   AddressContent.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     country = json['country'];
-    districtNameAr = json['districtNameAr'];
+    districtName = json['districtName'];
     street = json['street'];
-    cityNameAr = json['cityNameAr'];
+    cityName = json['cityName'];
   }
 }

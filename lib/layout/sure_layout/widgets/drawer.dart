@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:surebaladi/layout/sure_layout/settings_screen.dart';
 import 'package:surebaladi/layout/sure_layout/sure_layout.dart';
+import 'package:surebaladi/modules/address/address_screen.dart';
 import 'package:surebaladi/modules/auth/login/login_screen.dart';
 import 'package:surebaladi/shared/Local/cache_helper.dart';
 import 'package:surebaladi/shared/component/component.dart';
@@ -70,15 +71,22 @@ class MyDrawer extends StatelessWidget {
               leading: const Icon(IconBroken.setting),
               title: Text('Settings'.tr()),
             ),
+            if (CacheHelper.getData(key: token) != null)
+              ListTile(
+                onTap: () {
+                  navigateTo(context: context, widget: AddressScreen());
+                },
+                leading: const Icon(IconBroken.setting),
+                title: Text('Address'.tr()),
+              ),
             ListTile(
               onTap: () {
                 if (CacheHelper.getData(key: token) != null) {
                   CacheHelper.clearData(token).then((value) {
-                    CacheHelper.clearAll();
                     showToast(
                         text: 'Logged out successfully'.tr(),
                         state: ToastStates.ERROR);
-                    navigateAndFinish(context: context, widget: LoginScreen());
+                    navigateAndFinish(context: context, widget: SureLayout());
                   });
                 } else {
                   navigateTo(context: context, widget: LoginScreen());

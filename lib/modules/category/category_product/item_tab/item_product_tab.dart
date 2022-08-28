@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:surebaladi/layout/cubit/cubit.dart';
 import 'package:surebaladi/layout/cubit/states.dart';
@@ -14,8 +12,8 @@ import 'package:surebaladi/shared/constants/const.dart';
 import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
-class ItemCategoryProduct extends StatelessWidget {
-  const ItemCategoryProduct({Key? key,}) : super(key: key);
+class ItemCategoryProductTab extends StatelessWidget {
+  const ItemCategoryProductTab({Key? key,}) : super(key: key);
   // final VoidCallback? onPressed;
   // final int categoryProductId;
 
@@ -27,13 +25,13 @@ class ItemCategoryProduct extends StatelessWidget {
       builder: (context, state) {
         var cubit = HomeCubit.get(context);
         var productCubit = cubit.productContent;
-        if(cubit.categoryProductModel != null && cubit.cartModels != null) {
+        if(cubit.categoryProductModel != null) {
           return ConditionalBuilder(
               condition: productCubit.isNotEmpty,
               builder: (context) => Column(
                 children: [
                   MasonryGridView.count(
-                      crossAxisCount: 2,
+                      crossAxisCount: 5,
                       mainAxisSpacing: 2,
                       crossAxisSpacing: 4,
                       itemCount: productCubit.length,

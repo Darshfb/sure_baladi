@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:surebaladi/layout/sure_layout/sure_layout.dart';
 import 'package:surebaladi/models/cart_models/checkout_models.dart';
+import 'package:surebaladi/modules/address/address_screen.dart';
 import 'package:surebaladi/modules/cart_list/cubit/cart_cubit.dart';
 import 'package:surebaladi/modules/cart_list/cubit/cart_states.dart';
 import 'package:surebaladi/shared/component/component.dart';
+import 'package:surebaladi/shared/styles/icon_broken.dart';
 
 enum Menu { completed, favorite, delete }
 
@@ -29,11 +31,11 @@ class CheckOut extends StatelessWidget {
           var cubit = CheckOutCubit.get(context);
           return Scaffold(
             appBar: AppBar(
-              title: TextButton(
-                  onPressed: () {
-                    cubit.getAddress();
-                  },
-                  child: Text('Hi')),
+              centerTitle: true,
+              title: Text('Check out'.tr()),
+              leading: IconButton(icon: const Icon(Icons.arrow_back_ios, color: Colors.white), onPressed: (){
+                Navigator.pop(context);
+              },),
             ),
             body: Column(
               children: [
@@ -72,10 +74,18 @@ class CheckOut extends StatelessWidget {
                     steps: [
                       Step(
                           isActive: cubit.currentStep >= 0,
-                          title: Text('Choose your Address'.tr()),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Choose your Address'.tr()),
+                              TextButton(onPressed: (){
+                                navigateTo(context: context, widget: AddressScreen());
+                              }, child: const Text('Add New Address'))
+                            ],
+                          ),
                           content: SizedBox(
                               height: MediaQuery.of(context).size.height / 3,
-                              child: ListView.builder(
+                              child: ListView.separated(
                                   itemCount: cubit.list.length,
                                   itemBuilder: (context, index) {
                                     var item = cubit.list[index];
@@ -95,18 +105,24 @@ class CheckOut extends StatelessWidget {
                                           id = item['id'];
                                           print(item['id']);
                                         },
-                                        title: Container(
-                                          child: customText(
-                                            text: item['street'] +
-                                                ' ' +
-                                                item['districtNameAr'] +
-                                                ' ' +
-                                                item['cityNameAr'].toString(),
-                                          ),
+                                        title: Column(
+                                          children: [
+                                            customText(
+                                              text: item['street'] +
+                                                  ' ' +
+                                                  item['districtName'] +
+                                                  ' ' +
+                                                  item['cityName'].toString(),
+                                            ),
+                                            const SizedBox(height: 10.0,),
+                                            Text(item['country'])
+                                          ],
                                         ),
                                       ),
                                     );
-                                  }))),
+                                  },
+                              separatorBuilder: (context, index)=> Divider(color: Colors.grey[700]),
+                              ))),
                       Step(
                           isActive: cubit.currentStep >= 1,
                           title: Text('Choose your date'.tr()),

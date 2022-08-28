@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 class AppStrings {
   static String welcome = 'Welcome!'.tr();
+  static String title = 'Sure Baladi'.tr();
   static String userData = 'Login with your email & password'.tr();
   static String enterYourEmail = 'Enter Your Email'.tr();
   static String plzEnterYourEmail = 'Please Enter Your Email'.tr();

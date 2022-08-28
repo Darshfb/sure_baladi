@@ -88,6 +88,7 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 15.0),
                                     CustomTextFormField(
+                                      maxLines: 1,
                                       keyboardType: TextInputType.name,
                                       controller: userNameController,
                                       hintText: AppStrings.enterYourEmail,
@@ -102,6 +103,7 @@ class LoginScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 7.0),
                                     CustomTextFormField(
+                                      maxLines: 1,
                                       keyboardType:
                                           TextInputType.visiblePassword,
                                       controller: passwordController,

@@ -14,6 +14,7 @@ Widget CustomTextFormField({
   bool isDense = true,
   ValueChanged<String>? onChanged,
   GestureTapCallback? onTap,
+  int? maxLines,
 }) =>
     TextFormField(
       onTap: onTap,
@@ -23,6 +24,7 @@ Widget CustomTextFormField({
       controller: controller,
       obscureText: obscureText,
       onChanged: onChanged,
+      maxLines: maxLines,
       decoration: InputDecoration(
         isDense: isDense,
         hintText: hintText,
@@ -148,10 +150,9 @@ Widget customText({
     Text(
       text,
       style: TextStyle(
-        color: color,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-        overflow: overflow
-      ),
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+          overflow: overflow),
       maxLines: maxLines,
     );

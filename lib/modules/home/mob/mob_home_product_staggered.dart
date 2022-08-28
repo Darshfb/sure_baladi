@@ -15,7 +15,8 @@ import 'package:surebaladi/shared/styles/icon_broken.dart';
 import 'package:surebaladi/shared/utilis/constant/app_colors.dart';
 
 class MobStaggeredHomeProduct extends StatelessWidget {
-  const MobStaggeredHomeProduct({Key? key, required this.onPressed}) : super(key: key);
+  const MobStaggeredHomeProduct({Key? key, required this.onPressed})
+      : super(key: key);
   final VoidCallback? onPressed;
 
   @override
@@ -63,64 +64,52 @@ class MobStaggeredHomeProduct extends StatelessWidget {
                                             Clip.antiAliasWithSaveLayer,
                                         child: Padding(
                                           padding: const EdgeInsets.all(2.0),
-                                          child: CachedNetworkImage(
-                                            fit: BoxFit.cover,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            // height: 140,
-                                            imageUrl:
-                                                product[index].productImage!,
-                                            placeholder: (context, url) =>
-                                                const Center(
-                                                    child:
-                                                        CircularProgressIndicator()),
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                const Image(
-                                                    image: AssetImage(
-                                                        'assets/images/sure_logo.png')),
+                                          child: Stack(
+                                            alignment: AlignmentDirectional
+                                                .bottomStart,
+                                            children: [
+                                              CachedNetworkImage(
+                                                height: 220,
+                                                fit: BoxFit.contain,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                // height: 140,
+                                                imageUrl: product[index]
+                                                    .productImage!,
+                                                placeholder: (context, url) =>
+                                                    const Center(
+                                                        child:
+                                                            CircularProgressIndicator()),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    const Image(
+                                                        image: AssetImage(
+                                                            'assets/images/sure_logo.png')),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {},
+                                                icon:    CircleAvatar(
+                                                  radius: 15.0,
+                                                  backgroundColor: Colors.green.shade200,
+                                                  child: const Icon(
+                                                      Icons.favorite_border,
+                                                  size: 20.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-
-                                          // FadeInImage.assetNetwork(
-                                          //   fit: BoxFit.contain,
-                                          //   placeholder:
-                                          //       'assets/images/loading.gif',
-                                          //   width: MediaQuery.of(context)
-                                          //       .size
-                                          //       .width,
-                                          //   height: 140,
-                                          //   image:
-                                          //       '${product[index].productImage}',
-                                          // ),
                                         ),
                                       ),
                                     ),
-                                    customText(
-                                      text: '${product[index].productNameAr}',
-                                        overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18.0
-                                    ),
-                                    RatingBar.builder(
-                                      initialRating: 3,
-                                      minRating: 1,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemSize: 18,
-                                      itemCount: 5,
-                                      itemPadding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0),
-                                      itemBuilder: (context, _) => const Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        if (kDebugMode) {
-                                          print(rating);
-                                        }
-                                      },
+                                    Container(
+                                      child: customText(
+                                          text: '${product[index].productName}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 18.0),
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -130,14 +119,13 @@ class MobStaggeredHomeProduct extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         customText(
-                                          text: '${product[index].quantityType}',
-
-                                              color: AppColors.primaryColor),
+                                            text:
+                                                '${product[index].quantityType}',
+                                            color: AppColors.primaryColor),
                                         customText(text: '/'),
                                         customText(
-                                         text:  '${product[index].price}',
-
-                                              color: AppColors.primaryColor),
+                                            text: '${product[index].price}',
+                                            color: AppColors.primaryColor),
                                       ],
                                     ),
                                     const SizedBox(
@@ -150,9 +138,15 @@ class MobStaggeredHomeProduct extends StatelessWidget {
                                             width: double.infinity,
                                             height: 35,
                                             onPressed: () {
-                                              if(CacheHelper.getData(key: token) == null){
-                                                showToast(text: 'You have to Login first'.tr(), state: ToastStates.ERROR);
-                                              }else{
+                                              if (CacheHelper.getData(
+                                                      key: token) ==
+                                                  null) {
+                                                showToast(
+                                                    text:
+                                                        'You have to Login first'
+                                                            .tr(),
+                                                    state: ToastStates.ERROR);
+                                              } else {
                                                 cubit.increaseAddToCart(
                                                     id: product[index].id!);
                                               }
@@ -273,7 +267,8 @@ class MobStaggeredHomeProduct extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: OutlinedButton(
                                 onPressed: () {
-                                  cubit.getHomeProductData(isRefresh: false);
+                                  cubit.getHomeProductData(
+                                      isRefresh: false, context: context);
                                   // print(product.length.toString());
                                 },
                                 child: customText(
@@ -300,7 +295,9 @@ class MobStaggeredHomeProduct extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                SizedBox(height: 100.0,),
+                SizedBox(
+                  height: 100.0,
+                ),
                 Center(child: CircularProgressIndicator()),
               ],
             ),

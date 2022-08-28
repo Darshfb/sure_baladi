@@ -86,7 +86,7 @@ class HomeProducts extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '${product[index].productNameAr}',
+                                      '${product[index].productName}',
                                       style: const TextStyle(
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -259,7 +259,7 @@ class HomeProducts extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: OutlinedButton(
                                 onPressed: () {
-                                  cubit.getHomeProductData(isRefresh: false);
+                                  cubit.getHomeProductData(isRefresh: false, context: context);
                                   // print(product.length.toString());
                                 },
                                 child: Text(

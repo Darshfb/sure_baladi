@@ -71,4 +71,9 @@ class GetMoreHomeData extends HomeStates {}
 class ChangeLanguageState extends HomeStates {}
 
 class ChangeLangState extends HomeStates {}
+
 class ChangeCategoryState extends HomeStates {}
+
+class LoadingOnWillPopState extends HomeStates{}
+class SuccessOnWillPopState extends HomeStates{}
+// class onWillPopState extends HomeStates{}

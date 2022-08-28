@@ -20,7 +20,9 @@ class CartScreen extends StatelessWidget {
 
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (BuildContext context, state) {
-
+        if(state is ErrorCartState){
+          CacheHelper.clearData(token);
+        }
       },
       builder: (BuildContext context, Object? state) {
         var cubit = HomeCubit.get(context);
@@ -94,7 +96,7 @@ class CartScreen extends StatelessWidget {
                                               .cartModels!
                                               .cartItems[index]
                                               .product!
-                                              .productNameAr
+                                              .productName
                                               .toString()),
                                           Text('Price - per one'.tr()),
                                           Text(cubit.cartModels!

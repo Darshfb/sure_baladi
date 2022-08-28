@@ -64,6 +64,7 @@ class TapStaggeredHomeProduct extends StatelessWidget {
                                         child: Padding(
                                           padding: const EdgeInsets.all(2.0),
                                           child: CachedNetworkImage(
+                                            height: 220,
                                             fit: BoxFit.cover,
                                             width: MediaQuery.of(context)
                                                 .size
@@ -97,7 +98,7 @@ class TapStaggeredHomeProduct extends StatelessWidget {
                                       ),
                                     ),
                                     customText(
-                                      text: '${product[index].productNameAr}',
+                                      text: '${product[index].productName}',
                                         overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       fontWeight: FontWeight.w600,
@@ -274,7 +275,7 @@ class TapStaggeredHomeProduct extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: OutlinedButton(
                                 onPressed: () {
-                                  cubit.getHomeProductData(isRefresh: false);
+                                  cubit.getHomeProductData(isRefresh: false, context: context);
                                   // print(product.length.toString());
                                 },
                                 child: customText(

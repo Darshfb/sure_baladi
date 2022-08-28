@@ -14,24 +14,20 @@ class CategoryProductModel {
 
 class CategoryProductContentModel {
   int? id;
-  String? productNameAr;
-  String? productNameEn;
+  String? productName;
   num? price;
   bool? available;
   String? quantityType;
-  String? descriptionAr;
-  String? descriptionEn;
+  String? description;
   String? productImage;
 
   CategoryProductContentModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    productNameAr = json['productNameAr'];
-    productNameEn = json['productNameEn'];
+    productName = json['productName'];
     price = json['price'];
     available = json['available'];
     quantityType = json['quantityType'];
-    descriptionAr = json['descriptionAr'];
-    descriptionEn = json['descriptionEn'];
+    description = json['descriptionAr'];
     productImage = json['productImage'];
   }
 }

@@ -10,12 +10,10 @@ class AllCategoriesModel {
 
 class CategoriesContent {
   int? id;
-  String? categoryNameAr;
-  String? categoryNameEn;
+  String? categoryName;
 
   CategoriesContent.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    categoryNameAr = json['categoryNameAr'];
-    categoryNameEn = json['categoryNameEn'];
+    categoryName = json['categoryName'];
   }
 }

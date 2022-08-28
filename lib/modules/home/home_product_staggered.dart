@@ -95,7 +95,7 @@ class StaggeredHomeProduct extends StatelessWidget {
                                       ),
                                     ),
                                     customText(
-                                      text: '${product[index].productNameAr}',
+                                      text: '${product[index].productName}',
                                         overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       fontWeight: FontWeight.w600,
@@ -267,7 +267,7 @@ class StaggeredHomeProduct extends StatelessWidget {
                               padding: const EdgeInsets.all(8.0),
                               child: OutlinedButton(
                                 onPressed: () {
-                                  cubit.getHomeProductData(isRefresh: false);
+                                  cubit.getHomeProductData(isRefresh: false,context: context);
                                   // print(product.length.toString());
                                 },
                                 child: customText(
